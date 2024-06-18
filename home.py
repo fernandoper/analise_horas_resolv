@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 from msal import ConfidentialClientApplication
 import requests
 import io
+import openpyxl
 
 # streamlit run home.py
 # pip freeze > requirements.txt

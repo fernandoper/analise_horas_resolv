@@ -147,17 +147,20 @@ if st.session_state['authenticated']:
         merged_data = merged_data.rename(columns={'duracao': 'Horas Trabalhadas', 'valor_pag': 'Valor Pago'})
         merged_data = merged_data.fillna(0)
 
+        # Desloca o valor pago para o mês anterior para cálculos
+        merged_data['Valor Pago Anterior'] = merged_data['Valor Pago'].shift(-1).fillna(0)
+
         # Calcula a diferença percentual entre o valor pago e a cobrança
-        merged_data['Diferença % Pago/Cobrança'] = ((merged_data['Valor Pago'] - merged_data['cobranca']) /
+        merged_data['Diferença % Pago/Cobrança'] = ((merged_data['Valor Pago Anterior'] - merged_data['cobranca']) /
                                                     merged_data['cobranca'].replace(0, 1)) * 100
 
         # Calcula a diferença percentual entre o valor pago e o custo
-        merged_data['Diferença % Pago/Custo'] = ((merged_data['Valor Pago'] - merged_data['custo']) /
+        merged_data['Diferença % Pago/Custo'] = ((merged_data['Valor Pago Anterior'] - merged_data['custo']) /
                                                  merged_data['custo'].replace(0, 1)) * 100
 
         # Calcula a margem de lucro bruta
-        merged_data['Margem de Lucro Bruta'] = ((merged_data['Valor Pago'] - merged_data['custo']) /
-                                                merged_data['Valor Pago'].replace(0, 1)) * 100
+        merged_data['Margem de Lucro Bruta'] = ((merged_data['Valor Pago Anterior'] - merged_data['custo']) /
+                                                merged_data['Valor Pago Anterior'].replace(0, 1)) * 100
 
         return merged_data
 
